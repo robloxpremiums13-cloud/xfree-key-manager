@@ -591,13 +591,18 @@
         async function generateKeys(count) {
             const startSize = keys.size;
             for (let i = 0; i < count; i++) {
-                keys.add(generateRandomKey());
+                let newKey = generateRandomKey();
+                // Make sure key is unique
+                while (keys.has(newKey)) {
+                    newKey = generateRandomKey();
+                }
+                keys.add(newKey);
             }
             const newKeys = keys.size - startSize;
             totalGenerated += newKeys;
             saveKeys();
             updateDisplay();
-            showAlert(`Generated ${newKeys} keys. Syncing to GitHub...`, 'info');
+            showAlert(`Generated ${newKeys} new keys (Total: ${keys.size}). Syncing to GitHub...`, 'info');
             await syncToGitHub();
         }
 
